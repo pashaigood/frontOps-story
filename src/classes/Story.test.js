@@ -1,5 +1,5 @@
 import Story from './Story';
-import isEqual from 'lodash/isEqual';
+import { Person, Home } from './Subject'
 
 const prefix = __dirname.split('/src/')[1].replace('/__tests__', '') + '/';
 
@@ -8,13 +8,12 @@ describe(prefix + 'Story', () => {
   let sayHelloToUser = jasmine.createSpy('spy');
   beforeEach(() => {
     story = new Story();
-    home = new Subject({position: [200, 200]});
+    home = new Home({position: [200, 200]});
     Mom = new Person({home, position: home.position});
     Tim = new Person({position: [0, 200]});
 
     sayHelloToUser.calls.reset();
   });
-
 
   it('user position should be equal home position', () => {
     expect(Mom.at(home)).toBeTruthy();
@@ -57,25 +56,3 @@ describe(prefix + 'Story', () => {
     expect(Mom_at_home(Mom).run()).toBe(true);
   })
 });
-
-class Subject {
-  position = [0, 0];
-
-  constructor (props) {
-    Object.assign(this, props);
-  }
-
-  at = (object) => {
-    return isEqual(this.position, object.position);
-  }
-}
-
-class Person extends Subject {
-  constructor ({home, ...props}) {
-    super(props);
-    this._home = home;
-  }
-  home = () => {
-    return this.at(this._home);
-  }
-}

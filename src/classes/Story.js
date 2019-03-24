@@ -2,10 +2,12 @@ import isEqual from 'lodash/isEqual';
 import isFunction from 'lodash/isFunction';
 
 export default class Story {
+  /**
+   * @private
+   * @type {boolean}
+   */
+  freez = false;
 
-  constructor () {
-    this.is.not = this.not.bind(this);
-  }
   /**
    * @private
    * @type {Array<{mod: string, subject: Object}>}
@@ -18,6 +20,10 @@ export default class Story {
    */
   actions = new Set();
 
+  constructor () {
+    this.is.not = this.not.bind(this);
+  }
+
   /**
    *
    * @return {Story}
@@ -28,7 +34,7 @@ export default class Story {
       if (subject.hasOwnProperty(key) && isFunction(subject[key])) {
         this.is[key] = this[key] = (...params) => {
           let result = subject[key].apply(subject, params);
-          this.story.push({mod: 'custom', subject, result});
+          this.story.push({ mod: 'custom', subject, result });
           return this;
         }
       }
@@ -77,6 +83,7 @@ export default class Story {
    */
   then (action) {
     this.actions.add(action);
+    
     return this;
   }
 
